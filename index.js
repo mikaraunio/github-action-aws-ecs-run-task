@@ -100,7 +100,7 @@ const main = async () => {
 
         // Wait for task to be in running state
         core.debug(`Waiting for task to be in running state.`)
-        await ecs.waitFor('tasksRunning', {cluster, tasks: [taskArn]}).promise();
+        await ecs.waitFor('tasksRunning', {cluster, tasks: [taskArn]}).promise().catch(e => core.info(e));
 
         // Get logging configuration
         let logFilterStream = null;
@@ -160,7 +160,7 @@ const main = async () => {
             cluster,
             tasks: [taskArn],
             $waiter: {delay: 6, maxAttempts: taskStoppedWaitForMaxAttempts}}
-        ).promise();
+        ).promise().catch(e => core.info(e));
 
         // Close LogStream and store output
         if (logFilterStream !== null) {
